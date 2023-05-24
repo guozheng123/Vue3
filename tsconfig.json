@@ -12,6 +12,7 @@
     "skipLibCheck": true,
     "noEmit": true,
     "baseUrl": ".",
+    // import 引入 使用 @ 会提示
     "paths": {
       "@/*": ["src/*"]
     },

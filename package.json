@@ -4,11 +4,14 @@
   "version": "0.0.0",
   "type": "module",
   "scripts": {
-    "dev": "vite",
+    "dev": "ls-lint && vite",
     "build": "vue-tsc && vite build",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "ls-lint": "ls-lint"
   },
   "dependencies": {
+    "@ls-lint/ls-lint": "^2.0.0",
+    "lint-staged": "^13.2.2",
     "path": "^0.12.7",
     "vue": "^3.2.47"
   },

@@ -9,7 +9,10 @@ export default defineConfig({
     plugins: [vueJsx()],
     resolve: {
         alias: {
-            // 关键代码
+            // 关键代码 在 tsconfig.json => compilerOptions 中配置,@ 引入会有提示
+            // "paths": {
+            //   "@/*": ["src/*"]
+            //  },
             '@': path.resolve(__dirname, './src')
         }
     }
