@@ -1,3 +1,41 @@
+// 推荐使用vscode插件
+// 1： 打开插件栏目
+// 2： 右上角有个漏斗 （提示：筛选器扩展）
+// 3： 点击推荐
+// 注： 如果想自行添加推荐插件  打开插件右下角 有个详细信息，将【标识符】复制进来即可
 {
-  "recommendations": ["Vue.volar", "Vue.vscode-typescript-vue-plugin"]
+  "recommendations": [
+    // Chinese (Simplified) (简体中文)
+    "ms-ceintl.vscode-language-pack-zh-hans", // 中文翻译
+
+    // Color Highlight
+    "naumovs.color-highlight", // 颜色展示 如style使用： #fff / white: 背景色会变成白色
+
+    // Error Lens
+    "usernamehw.errorlens", // 文件中警告/报错 直接在代码后面高亮提示
+
+    // ESLint
+    "dbaeumer.vscode-eslint", // eslint
+
+    // Git History
+    "donjayamanne.githistory", // 可以查看git提交历史  使用： 选择要查看的文件 Alt + H
+
+    // Import Cost
+    "wix.vscode-import-cost", // 显示引入的包 大小 例： import {ref} from 'vue';  113.4K
+
+    // Less IntelliSense
+    "mrmlnc.vscode-less",
+
+    // TypeScript Vue Plugin (Volar)
+    "vue.vscode-typescript-vue-plugin", // vue ts 的校验
+
+    // Code Spell Checker
+    "streetsidesoftware.code-spell-checker", // 查看 代码的提交记录， 点击要查看的代码 例： if (name === 'abc') true;    张三：半年前提交
+
+    // var-translate
+    "angguixuan.var-translate-en", // 写变量名或者函数名先打中文，Ctrl + shift + ← 选中后按快捷键翻译为英文
+
+    // Prettier - Code formatter
+    "esbenp.prettier-vscode" // 根目录 .prettierrc 代码进行格式化配置
+  ]
 }
