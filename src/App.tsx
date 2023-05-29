@@ -1,10 +1,16 @@
-import { h, ref, defineComponent } from 'vue';
-import { useLoading } from '@/hooks';
+import GCHeader from "@/components/GCHeader";
+import GCTable from "@/components/GCTable";
 export default defineComponent({
-    name: 'App',
+    name: "App",
     setup() {
-        const { loading } = useLoading();
-        const title = ref('title');
-        return () => <div>123= ={title}</div>;
-    }
+        const title = ref("信息");
+        return () => (
+            <div>
+                <div>{unref(title)}</div>
+                <a-button>按钮</a-button>
+                <GCHeader></GCHeader>
+                <GCTable />
+            </div>
+        );
+    },
 });

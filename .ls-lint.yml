@@ -1,15 +1,15 @@
 # 配置地址
 # https://everfind.github.io/tools/ls-lint.html#%E9%85%8D%E7%BD%AE
-# 配置
+# 配置 可以使用正则 regex:[a-z0-9]+
 # # 需要 npm add @ls-lint/ls-lint
 # # 在 package.json 中， scripts 中，运行命令中
 ### 例： "dev": "ls-lint && vite",
 ls:
-    .js: camelCase | kebab-case
+    .js: camelCase | kebab-case | point.case
     .ts: kebab-case | point.case
     .json: kebab-case | point.case
     .vue: PascalCase
     .tsx: kebab-case | point.case | camelCase | PascalCase
     .d.ts: kebab-case | point.case
-ignore:
+ignore: # 忽略
     - node_modules

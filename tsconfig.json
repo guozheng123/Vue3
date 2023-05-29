@@ -14,12 +14,19 @@
     "baseUrl": ".",
     // import 引入 使用 @ 会提示
     "paths": {
-      "@/*": ["src/*"]
+      "@/*": ["src/*"],
     },
     "jsx": "preserve",
     "jsxFactory": "h.JSX",
     "jsxFragmentFactory": "Fragment"
   },
-  "include": ["src/**/*.ts", "src/**/*.d.ts", "src/**/*.tsx", "src/**/*.vue"],
+  "include": [
+    "src/**/*.ts",
+    "src/**/*.d.ts",
+    "src/**/*.tsx",
+    "src/**/*.vue",
+    "./auto-imports.d.ts",
+    "./components.d.ts"
+  ],
   "references": [{ "path": "./tsconfig.node.json" }]
 }
