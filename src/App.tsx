@@ -1,5 +1,5 @@
-import GCHeader from "@/components/GCHeader";
 import GCTable from "@/components/GCTable";
+import GCHeader from "@/components/GCHeader";
 export default defineComponent({
     name: "App",
     setup() {

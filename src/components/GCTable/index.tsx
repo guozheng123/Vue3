@@ -1,4 +1,4 @@
-import style from "./index.less";
+import style from "./style.less";
 import { TABLE } from "./type";
 export default defineComponent({
     name: "GCTable",
