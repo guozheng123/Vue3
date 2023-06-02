@@ -43,7 +43,9 @@ export default defineConfig({
             resolvers: [
                 // 使用 AnTD - UI框架， 如使用其他UI 下面接着配置
                 // ElementPlusResolver(),
-                AntDesignVueResolver(),
+                AntDesignVueResolver({
+                    importStyle: "less",
+                }),
             ],
             // 需要使用得文件后缀
             include: [/\.[tj]sx?$/, /\.vue$/, /\.vue\?vue/, /\.md$/],

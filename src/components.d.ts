@@ -10,10 +10,8 @@ export {}
 declare module '@vue/runtime-core' {
   export interface GlobalComponents {
     AButton: typeof import('ant-design-vue/es')['Button']
-    ASpace: typeof import('ant-design-vue/es')['Space']
-    ATable: typeof import('ant-design-vue/es')['Table']
-    ATableColumn: typeof import('ant-design-vue/es')['TableColumn']
-    ATableColumnGroup: typeof import('ant-design-vue/es')['TableColumnGroup']
-    ATag: typeof import('ant-design-vue/es')['Tag']
+    AResult: typeof import('ant-design-vue/es')['Result']
+    RouterLink: typeof import('vue-router')['RouterLink']
+    RouterView: typeof import('vue-router')['RouterView']
   }
 }

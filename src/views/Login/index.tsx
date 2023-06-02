@@ -1,7 +1,7 @@
-import { defineComponent } from 'vue';
+import { defineComponent } from "vue";
 export default defineComponent({
-    name: 'login',
+    name: "login",
     setup() {
-        return () => <div>登录页</div>;
-    }
+        return () => <div>Login</div>;
+    },
 });

@@ -6,10 +6,10 @@
 ### 例： "dev": "ls-lint && vite",
 ls:
     .js: camelCase | kebab-case | point.case
-    .ts: kebab-case | point.case
+    .ts: kebab-case | point.case | camelCase
     .json: kebab-case | point.case
     .vue: PascalCase
     .tsx: kebab-case | point.case | camelCase | PascalCase
-    .d.ts: kebab-case | point.case
+    .d.ts: kebab-case | point.case | camelCase
 ignore: # 忽略
     - node_modules
