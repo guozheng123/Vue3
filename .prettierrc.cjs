@@ -70,12 +70,12 @@ module.exports = {
     //  * @type {boolean}
     //  */
     // bracketSameLine: false,
-    // /**
-    //  * 当箭头函数只有一个参数是否加括号
-    //  * @default "always"
-    //  * @type {"always"|"avoid"}
-    //  */
-    // arrowParens: 'always',
+    /**
+     * 当箭头函数只有一个参数是否加括号
+     * @default "always"
+     * @type {"always"|"avoid"}
+     */
+    arrowParens: "always",
     // /**
     //  * 为HTML、Vue、Angular和Handlebars指定全局空格敏感性
     //  * @default "css"

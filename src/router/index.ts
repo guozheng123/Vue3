@@ -12,7 +12,7 @@ const router = createRouter({
 });
 
 // 动态导航
-useAddRoute(router);
+await useAddRoute(router);
 // 导航守卫
 useBeforeEach(router);
 

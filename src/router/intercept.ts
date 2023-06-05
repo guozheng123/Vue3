@@ -2,7 +2,7 @@
 import type { Router } from "vue-router";
 const useBeforeEach = (router: Router) => {
     router.beforeEach((to, from, next) => {
-        console.log(to);
+        document.title = to.meta.title as string;
         next();
     });
 };

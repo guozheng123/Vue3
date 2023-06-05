@@ -1,4 +1,4 @@
-import { ref, unref } from 'vue';
+import { ref, unref } from "vue";
 
 export const useLoading = () => {
     const loading = ref(false);
@@ -7,6 +7,6 @@ export const useLoading = () => {
     };
     return {
         loading,
-        setLoading
+        setLoading,
     };
 };
