@@ -1,6 +1,5 @@
 // 路由白名单
 import { RouteRecordRaw } from "vue-router";
-
 const whiteListRouter: Array<RouteRecordRaw> = [
     {
         path: "/",
@@ -33,19 +32,6 @@ const whiteListRouter: Array<RouteRecordRaw> = [
             title: "主页",
         },
         component: () => import("@/views/Home"),
-        children: [
-            {
-                path: "detail",
-                meta: {
-                    title: "主页详情",
-                },
-                components: {
-                    HomeHeader: () => import("@/views/Home/components/HomeHeader"),
-                    HomeContent: () => import("@/views/Home/components/HomeContent"),
-                    HomeFooter: () => import("@/views/Home/components/HomeFooter"),
-                },
-            },
-        ],
     },
     { path: "/:catchAll(.*)", redirect: "/404" },
 ];
