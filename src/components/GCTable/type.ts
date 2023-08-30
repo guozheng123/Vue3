@@ -1,12 +1,8 @@
-import internal from "stream";
+import type { TableProps } from "ant-design-vue";
 
-export interface TABLE {
-    name: string;
-    age: number;
-    lick?: string;
-}
-
-export interface PropsDetails {
-    columns: any[];
-    dataSource: any[];
+/**
+ * @returns TableProps 表格Ts
+ */
+export interface GCTableProps extends TableProps {
+    isOpenModal?: boolean;
 }

@@ -8,8 +8,6 @@ export default defineComponent({
         return () => (
             <>
                 <HomeHeader />
-                <HomeContent />
-                <HomeFooter />
             </>
         );
     },

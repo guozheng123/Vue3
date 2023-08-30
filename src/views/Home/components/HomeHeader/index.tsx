@@ -7,15 +7,9 @@ export default defineComponent({
     setup() {
         const { loading, setLoading } = useLoading();
         const { dataSource } = useTable({
-            api: () => {
-                return [
-                    {
-                        key: 1,
-                        name: `Edward King`,
-                        age: 32,
-                        address: `London, Park Lane no. `,
-                    },
-                ];
+            api: async () => {
+                const { data } = await import("./data.json");
+                return data;
             },
         });
 
@@ -31,7 +25,11 @@ export default defineComponent({
         ]);
         return () => (
             <>
-                <GCTable dataSource={dataSource.value} columns={columns.value} />
+                <GCTable
+                    dataSource={dataSource.value}
+                    columns={columns.value}
+                    isOpenModal={false}
+                />
             </>
         );
     },
