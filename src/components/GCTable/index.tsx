@@ -7,7 +7,6 @@ export default defineComponent({
     style,
     setup(props: GCTableProps) {
         const attrs: GCTableProps = useAttrs();
-        console.log(attrs, 99);
         return () => (
             <>
                 <a-table {...attrs} />
