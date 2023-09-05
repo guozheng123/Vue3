@@ -1,18 +1,21 @@
 import { unref, ref, computed } from "vue";
-import { useLoading } from "@/hooks";
+import { TableColumnType } from "ant-design-vue";
 import GCTable from "@/components/GCTable";
 import { useTable } from "@/hooks/useTable";
-import { TableColumnType } from "ant-design-vue";
+import { useLoading } from "@/hooks";
+import { useGetMapList, getOptionsLabel } from "@/assets/config/mapOptions";
 export default defineComponent({
     name: "homeHeader",
     setup() {
         const { setLoading } = useLoading();
+        const { StatusTypeList } = useGetMapList();
         const { dataSource, loading, pagination, allTableAttrs } = useTable({
             api: async () => {
                 const { data } = await import("./data.json");
                 return data;
             },
-            isUsePagination: true,
+            isPagination: true,
+            isMultipleSelection: true,
         });
 
         const columns = computed(
@@ -29,7 +32,7 @@ export default defineComponent({
                     {
                         title: "Type",
                         dataIndex: "status",
-                        customRender: ({ value }) => (value ? "开始" : "关闭"),
+                        customRender: ({ value }) => getOptionsLabel(value, StatusTypeList),
                     },
                 ] as TableColumnType[]
         );
