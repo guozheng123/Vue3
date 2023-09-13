@@ -9,7 +9,7 @@ export default defineComponent({
     setup() {
         const { setLoading } = useLoading();
         const { StatusTypeList } = useGetMapList();
-        const { dataSource, loading, pagination, allTableAttrs, setSelectedKeys, getSelectedInfo } =
+        const { dataSource, loading, pagination, allTableAttrs, setSelectedKeys, selectedInfo } =
             useTable({
                 api: async ({ pagination }: any) => {
                     return await new Promise((res, rej) => {
@@ -30,7 +30,7 @@ export default defineComponent({
                                 pageSize,
                                 current,
                             });
-                        }, 2000);
+                        }, 500);
                     });
                 },
                 isSavePageKeys: true,
@@ -57,14 +57,14 @@ export default defineComponent({
         );
 
         const onGetInfo = () => {
-            console.log(unref(getSelectedInfo));
+            console.log(unref(selectedInfo));
         };
         onMounted(() => {
-            setSelectedKeys([0, 1, 11]);
+            // setSelectedKeys([0, 1, 11]);
         });
         return () => (
             <>
-                {unref(getSelectedInfo).selectedKeysList.length}
+                {unref(selectedInfo).selectedRowKeys.length}
                 <a-button onClick={onGetInfo}>获取</a-button>
                 <GCTable {...allTableAttrs.value} columns={unref(columns)} />
             </>

@@ -19,9 +19,6 @@ export const useTable = ({
     type SelectedInfoType = {
         selectedRowKeys: Key[];
         selectedRows: Row[];
-        saveSelectedRowKeys: Row;
-        saveSelectedRows: Row;
-        current: number;
     };
 
     const { loading, setLoading } = useLoading();
@@ -29,9 +26,6 @@ export const useTable = ({
     const selectedInfo = ref<SelectedInfoType>({
         selectedRowKeys: [],
         selectedRows: [],
-        saveSelectedRowKeys: {},
-        saveSelectedRows: {},
-        current: 1,
     });
 
     // 分页配置
@@ -43,9 +37,8 @@ export const useTable = ({
         showSizeChanger: true,
         showTotal: (total) => `共 ${total} 条`,
         onChange: (c, p) => {
-            const { pageSize, current } = unref(pagination);
+            const { pageSize } = unref(pagination);
             if (pageSize !== p) c = 1;
-            if (isSavePageKeys) setSelectedInfo({ key: "current", value: current });
             setPagination({ current: c, pageSize: p });
             getTableList();
         },
@@ -56,22 +49,43 @@ export const useTable = ({
         () =>
             ({
                 selectedRowKeys: unref(selectedInfo).selectedRowKeys,
-                onChange: (selectedRowKeys: Key[], selectedRows: Row[]) => {
-                    const { saveSelectedRowKeys, saveSelectedRows, current } = unref(selectedInfo);
-                    selectedInfo.value = {
-                        selectedRowKeys,
-                        selectedRows,
-                        saveSelectedRowKeys,
-                        saveSelectedRows,
-                        current,
-                    };
+                onSelect: (record, selected) => {
+                    setSelectedInfo(selected, [record]);
                 },
-                onSelect: (a, b) => {
-                    // console.log(a, b, 78);
+                onSelectAll: (selected, selectedRowsAll, changeRows) => {
+                    setSelectedInfo(selected, changeRows);
                 },
                 type,
             } as TableProps["rowSelection"])
     );
+
+    // 设置多选信息
+    const setSelectedInfo = (selected: boolean, selectedRowsAll: Row[]) => {
+        const { selectedRowKeys, selectedRows } = unref(selectedInfo);
+        let keysList: Key[] = selectedRowKeys.slice();
+        let rowList: Row[] = selectedRows.slice();
+        selectedRowsAll = selectedRowsAll.filter((o) => o);
+        if (type === "checkbox") {
+            selectedRowsAll.forEach((item) => {
+                if (selected) {
+                    if (!selectedRowKeys.includes(item.key)) {
+                        keysList.push(item.key);
+                        rowList.push(item);
+                    }
+                } else {
+                    keysList = keysList.filter((v) => v !== item.key);
+                    rowList = rowList.filter((v) => v.key !== item.key);
+                }
+            });
+        } else {
+            keysList = selectedRowsAll.map((v) => v.key);
+            rowList = [...selectedRowsAll];
+        }
+        selectedInfo.value = {
+            selectedRows: rowList,
+            selectedRowKeys: keysList,
+        };
+    };
 
     // 获取列表数据
     const getTableList = async () => {
@@ -92,37 +106,14 @@ export const useTable = ({
         setIsSavePageInfo();
     };
 
-    // 设置多选信息
-    const setSelectedInfo = ({ info = {}, key = "", value = "" }: Row) => {
-        selectedInfo.value = { ...unref(selectedInfo), ...info, [key]: value };
-    };
-
     // 设置 是否保存翻页的 多选信息
     const setIsSavePageInfo = () => {
-        const { saveSelectedRowKeys, saveSelectedRows, selectedRowKeys, selectedRows, current } =
-            unref(selectedInfo);
-        let info: SelectedInfoType | null = null;
         if (!isSavePageKeys) {
-            info = {
+            selectedInfo.value = {
                 selectedRowKeys: [],
                 selectedRows: [],
-                saveSelectedRowKeys: [],
-                saveSelectedRows: [],
-                current,
-            };
-        } else {
-            info = {
-                saveSelectedRowKeys: {
-                    ...saveSelectedRowKeys,
-                    [current as Key]: selectedRowKeys,
-                },
-                saveSelectedRows: {},
-                selectedRowKeys: [...(saveSelectedRowKeys[unref(pagination).current as Key] || [])],
-                selectedRows: [],
-                current,
             };
         }
-        setSelectedInfo({ info });
     };
 
     // 默认选中
@@ -152,19 +143,6 @@ export const useTable = ({
         pagination: unref(pagination),
     }));
 
-    // 获取 选中的keys值
-    const getSelectedInfo = computed(() => {
-        const { selectedRowKeys, saveSelectedRowKeys } = unref(selectedInfo);
-        let keysList: Key[] = [];
-        Object.keys(saveSelectedRowKeys).forEach((key) => {
-            keysList = [...saveSelectedRowKeys[key]];
-        });
-        return {
-            selectedKeysList: [...keysList, ...selectedRowKeys],
-            selectedInfoList: [],
-        };
-    });
-
     // 抛出 所有内置集合
     const allTableAttrs = computed(() => ({
         loading: unref(loading),
@@ -185,7 +163,7 @@ export const useTable = ({
         loading,
         pagination,
         allTableAttrs,
-        getSelectedInfo,
+        selectedInfo,
         setSelectedKeys,
     };
 };
