@@ -1,17 +1,39 @@
 import { ref, unref, reactive } from "vue";
 import { useLoading } from "@/hooks";
 import type { PaginationProps, TableProps, TableColumnType } from "ant-design-vue";
-export const useTable = ({ api, isPagination = false, isMultipleSelection = false }: any) => {
+export const useTable = ({
+    api,
+    isPagination = true,
+    isSavePageKeys = false,
+    isMultipleSelection = false,
+    type = "checkbox",
+}: {
+    api: Function;
+    isPagination?: boolean;
+    isSavePageKeys?: boolean;
+    isMultipleSelection?: boolean | any;
+    type?: string;
+}) => {
     type Key = string | number;
-    type SelectedInfoType = { selectedRowKeys: Key[]; selectedRows: any[] };
+    type Row = { [key: string]: any };
+    type SelectedInfoType = {
+        selectedRowKeys: Key[];
+        selectedRows: Row[];
+        saveSelectedRowKeys: Row;
+        saveSelectedRows: Row;
+        current: number;
+    };
 
     const { loading, setLoading } = useLoading();
-    const dataSource = ref<any[]>([]);
+    const dataSource = ref<Row[]>([]);
     const selectedInfo = ref<SelectedInfoType>({
         selectedRowKeys: [],
         selectedRows: [],
+        saveSelectedRowKeys: {},
+        saveSelectedRows: {},
+        current: 1,
     });
-    const selectedRowKeys = ref<any[]>([]);
+
     // 分页配置
     const pagination = ref<PaginationProps>({
         total: 0,
@@ -20,35 +42,92 @@ export const useTable = ({ api, isPagination = false, isMultipleSelection = fals
         showQuickJumper: true,
         showSizeChanger: true,
         showTotal: (total) => `共 ${total} 条`,
-        onChange: (current, pageSize) => {
-            if (unref(pagination).pageSize !== pageSize) current = 1;
-            setPagination({ current, pageSize });
+        onChange: (c, p) => {
+            const { pageSize, current } = unref(pagination);
+            if (pageSize !== p) c = 1;
+            if (isSavePageKeys) setSelectedInfo({ key: "current", value: current });
+            setPagination({ current: c, pageSize: p });
             getTableList();
         },
     });
 
     // 多选
-    const rowSelection = ref<TableProps["rowSelection"]>({
-        selectedRowKeys: unref(selectedRowKeys),
-        onChange: (selectedRowKey: Key[], selectedRows: any[]) => {
-            selectedInfo.value.selectedRowKeys = selectedRowKey;
-        },
-        getCheckboxProps: (record: any) => ({
-            disabled: record.status === 0, // Column configuration not to be checked
-        }),
-    });
+    const rowSelection = computed(
+        () =>
+            ({
+                selectedRowKeys: unref(selectedInfo).selectedRowKeys,
+                onChange: (selectedRowKeys: Key[], selectedRows: Row[]) => {
+                    const { saveSelectedRowKeys, saveSelectedRows, current } = unref(selectedInfo);
+                    selectedInfo.value = {
+                        selectedRowKeys,
+                        selectedRows,
+                        saveSelectedRowKeys,
+                        saveSelectedRows,
+                        current,
+                    };
+                },
+                onSelect: (a, b) => {
+                    // console.log(a, b, 78);
+                },
+                type,
+            } as TableProps["rowSelection"])
+    );
 
     // 获取列表数据
     const getTableList = async () => {
         try {
             setLoading(true);
-            const res = await api();
+            setResetTableInfo();
+            const res = await api(unref(getParam));
             setTableInfo(res);
         } catch (error) {
             console.log(error);
         } finally {
             setLoading(false);
         }
+    };
+
+    // 重置
+    const setResetTableInfo = () => {
+        setIsSavePageInfo();
+    };
+
+    // 设置多选信息
+    const setSelectedInfo = ({ info = {}, key = "", value = "" }: Row) => {
+        selectedInfo.value = { ...unref(selectedInfo), ...info, [key]: value };
+    };
+
+    // 设置 是否保存翻页的 多选信息
+    const setIsSavePageInfo = () => {
+        const { saveSelectedRowKeys, saveSelectedRows, selectedRowKeys, selectedRows, current } =
+            unref(selectedInfo);
+        let info: SelectedInfoType | null = null;
+        if (!isSavePageKeys) {
+            info = {
+                selectedRowKeys: [],
+                selectedRows: [],
+                saveSelectedRowKeys: [],
+                saveSelectedRows: [],
+                current,
+            };
+        } else {
+            info = {
+                saveSelectedRowKeys: {
+                    ...saveSelectedRowKeys,
+                    [current as Key]: selectedRowKeys,
+                },
+                saveSelectedRows: {},
+                selectedRowKeys: [...(saveSelectedRowKeys[unref(pagination).current as Key] || [])],
+                selectedRows: [],
+                current,
+            };
+        }
+        setSelectedInfo({ info });
+    };
+
+    // 默认选中
+    const setSelectedKeys = (keysList: Key[]) => {
+        selectedInfo.value.selectedRowKeys = keysList;
     };
 
     // 设置表格详情信息
@@ -68,8 +147,27 @@ export const useTable = ({ api, isPagination = false, isMultipleSelection = fals
         dataSource.value = [...list];
     };
 
+    // 获取列表参数
+    const getParam = computed(() => ({
+        pagination: unref(pagination),
+    }));
+
+    // 获取 选中的keys值
+    const getSelectedInfo = computed(() => {
+        const { selectedRowKeys, saveSelectedRowKeys } = unref(selectedInfo);
+        let keysList: Key[] = [];
+        Object.keys(saveSelectedRowKeys).forEach((key) => {
+            keysList = [...saveSelectedRowKeys[key]];
+        });
+        return {
+            selectedKeysList: [...keysList, ...selectedRowKeys],
+            selectedInfoList: [],
+        };
+    });
+
     // 抛出 所有内置集合
     const allTableAttrs = computed(() => ({
+        loading: unref(loading),
         pagination: unref(getPagination),
         dataSource: unref(dataSource),
         [isMultipleSelection && "rowSelection"]: isMultipleSelection && unref(rowSelection),
@@ -87,5 +185,7 @@ export const useTable = ({ api, isPagination = false, isMultipleSelection = fals
         loading,
         pagination,
         allTableAttrs,
+        getSelectedInfo,
+        setSelectedKeys,
     };
 };
