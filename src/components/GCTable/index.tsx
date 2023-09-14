@@ -7,10 +7,6 @@ export default defineComponent({
     style,
     setup(props: GCTableProps) {
         const attrs: GCTableProps = useAttrs();
-        return () => (
-            <>
-                <a-table {...attrs} />
-            </>
-        );
+        return () => <a-table {...attrs} />;
     },
 });

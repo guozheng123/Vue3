@@ -3,16 +3,18 @@ import { useLoading } from "@/hooks";
 import type { PaginationProps, TableProps, TableColumnType } from "ant-design-vue";
 export const useTable = ({
     api,
+    rowKey = "key",
+    type = "checkbox",
     isPagination = true,
     isSavePageKeys = false,
     isMultipleSelection = false,
-    type = "checkbox",
 }: {
     api: Function;
+    type?: string;
+    rowKey?: string | Function;
     isPagination?: boolean;
     isSavePageKeys?: boolean;
     isMultipleSelection?: boolean | any;
-    type?: string;
 }) => {
     type Key = string | number;
     type Row = { [key: string]: any };
@@ -61,6 +63,7 @@ export const useTable = ({
 
     // 设置多选信息
     const setSelectedInfo = (selected: boolean, selectedRowsAll: Row[]) => {
+        const key = unref(getRowKey);
         const { selectedRowKeys, selectedRows } = unref(selectedInfo);
         let keysList: Key[] = selectedRowKeys.slice();
         let rowList: Row[] = selectedRows.slice();
@@ -68,17 +71,17 @@ export const useTable = ({
         if (type === "checkbox") {
             selectedRowsAll.forEach((item) => {
                 if (selected) {
-                    if (!selectedRowKeys.includes(item.key)) {
-                        keysList.push(item.key);
+                    if (!selectedRowKeys.includes(item[key])) {
+                        keysList.push(item[key]);
                         rowList.push(item);
                     }
                 } else {
-                    keysList = keysList.filter((v) => v !== item.key);
-                    rowList = rowList.filter((v) => v.key !== item.key);
+                    keysList = keysList.filter((v) => v !== item[key]);
+                    rowList = rowList.filter((v) => v[key] !== item[key]);
                 }
             });
         } else {
-            keysList = selectedRowsAll.map((v) => v.key);
+            keysList = selectedRowsAll.map((v) => v[key]);
             rowList = [...selectedRowsAll];
         }
         selectedInfo.value = {
@@ -155,6 +158,9 @@ export const useTable = ({
     const getPagination = computed(
         () => (isPagination ? unref(pagination) : false) as PaginationProps
     );
+
+    // 获取 表格唯一 key
+    const getRowKey = computed(() => (typeof rowKey === "function" ? rowKey() : rowKey) as string);
 
     getTableList();
 

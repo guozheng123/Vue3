@@ -1,12 +1,14 @@
-import { unref, ref, computed } from "vue";
+import { unref, ref, defineAsyncComponent } from "vue";
 import { TableColumnType } from "ant-design-vue";
-import GCTable from "@/components/GCTable";
 import { useTable } from "@/hooks/useTable";
 import { useLoading } from "@/hooks";
+import { typeValidation } from "@/utils/toolClass";
+import { Suspense } from "@/components/common";
 import { useGetMapList, getOptionsLabel } from "@/assets/config/mapOptions";
 export default defineComponent({
     name: "homeHeader",
     setup() {
+        const GCTable = defineAsyncComponent(() => import("@/components/GCTable"));
         const { setLoading } = useLoading();
         const { StatusTypeList } = useGetMapList();
         const { dataSource, loading, pagination, allTableAttrs, setSelectedKeys, selectedInfo } =
@@ -57,17 +59,14 @@ export default defineComponent({
         );
 
         const onGetInfo = () => {
-            console.log(unref(selectedInfo));
+            console.log(typeValidation("string", undefined));
         };
         onMounted(() => {
             // setSelectedKeys([0, 1, 11]);
         });
-        return () => (
-            <>
-                {unref(selectedInfo).selectedRowKeys.length}
-                <a-button onClick={onGetInfo}>获取</a-button>
-                <GCTable {...allTableAttrs.value} columns={unref(columns)} />
-            </>
-        );
+        const slots = {
+            default: () => <GCTable {...allTableAttrs.value} columns={unref(columns)} />,
+        };
+        return () => <Suspense v-slots={slots}></Suspense>;
     },
 });
